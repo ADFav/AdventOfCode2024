@@ -1,0 +1,13 @@
+name: adfav/AoC2024
+
+services:
+  postgres:
+    image: postgres:15.8
+    ports:
+      - 5432:5432
+    environment:
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+      - "POSTGRES_DB=aoc2024"
+    # command: echo "I'm running ${COMPOSE_PROJECT_NAME}"
+    # volumes:
+    #   - ${PWD}/db-data/:/var/lib/postgresql/data/
