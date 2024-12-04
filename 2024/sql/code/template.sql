@@ -9,14 +9,13 @@ CREATE SCHEMA day_??;
 SET search_path TO day_??, public;
 
 DELETE FROM public.solutions WHERE day = ??;
-INSERT INTO public.solutions(day, part) VALUES (??, 'a'), (??, 'b');
 
 CREATE TABLE raw_input(
-    row_number SERIAL,
+    line_number SERIAL,
     raw_input text
 );
 COPY raw_input (raw_input) FROM '/input/??.txt';
-
+\timing on
 
 -- ACTUAL SOLUTION
 

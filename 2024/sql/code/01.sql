@@ -4,19 +4,18 @@ CREATE TABLE IF NOT EXISTS public.solutions(
     part text,
     solution text
 ) ;
-DROP SCHEMA IF EXISTS day_?? CASCADE;
-CREATE SCHEMA day_??;
-SET search_path TO day_??, public;
+DROP SCHEMA IF EXISTS day_01 CASCADE;
+CREATE SCHEMA day_01;
+SET search_path TO day_01, public;
 
-DELETE FROM public.solutions WHERE day = ??;
-INSERT INTO public.solutions(day, part) VALUES (??, 'a'), (??, 'b');
+DELETE FROM public.solutions WHERE day = 01;
 
 CREATE TABLE raw_input(
-    row_number SERIAL,
+    line_number SERIAL,
     raw_input text
 );
-COPY raw_input (raw_input) FROM '/input/??.txt';
-
+COPY raw_input (raw_input) FROM '/input/01.txt';
+\timing on
 
 -- ACTUAL SOLUTION
 CREATE TABLE lists(
