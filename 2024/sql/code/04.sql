@@ -39,62 +39,46 @@ SELECT
     letter
 FROM split_lines;
 
-with horizontal as (
-    SELECT 
-        string_agg(letter, '' ORDER BY y) AS line,
-        'horizontal' as direction,
-        x as line_num
+WITH horizontal AS (
+    SELECT count(*)
     FROM
-        word_search_letters
-    GROUP BY
-        x
-),
-vertical as (
-    SELECT 
-        string_agg(letter, '' ORDER BY x)AS line,
-        'vertical' as direction,
-        y as line_num
+        word_search_letters wsl1
+        JOIN word_search_letters wsl2 ON (wsl2.x, wsl2.y) = (wsl1.x + 1, wsl1.y)
+        JOIN word_search_letters wsl3 ON (wsl3.x, wsl3.y) = (wsl1.x + 2, wsl1.y)
+        JOIN word_search_letters wsl4 ON (wsl4.x, wsl4.y) = (wsl1.x + 3, wsl1.y)
+    WHERE
+        (wsl1.letter, wsl2.letter, wsl3.letter, wsl4.letter) IN (('X','M','A','S'), ('S','A','M','X'))
+), vertical AS (
+    SELECT count(*)
     FROM
-        word_search_letters
-    GROUP BY
-        y
-), diag_1 as (
-    SELECT 
-        string_agg(letter, '' ORDER BY x)AS line,
-        'diag_1' as direction,
-        x-y as line_num
+        word_search_letters wsl1
+        JOIN word_search_letters wsl2 ON (wsl2.x, wsl2.y) = (wsl1.x, wsl1.y + 1)
+        JOIN word_search_letters wsl3 ON (wsl3.x, wsl3.y) = (wsl1.x, wsl1.y + 2)
+        JOIN word_search_letters wsl4 ON (wsl4.x, wsl4.y) = (wsl1.x, wsl1.y + 3)
+    WHERE
+        (wsl1.letter, wsl2.letter, wsl3.letter, wsl4.letter) IN (('X','M','A','S'), ('S','A','M','X'))
+), diag_1 AS (
+    SELECT count(*)
     FROM
-        word_search_letters
-    GROUP BY
-        x - y
-), diag_2 as (
-    SELECT 
-        string_agg(letter, '' ORDER BY x)AS line,
-        'diag_2' as direction,
-        x+y as line_num
+        word_search_letters wsl1
+        JOIN word_search_letters wsl2 ON (wsl2.x, wsl2.y) = (wsl1.x + 1, wsl1.y + 1)
+        JOIN word_search_letters wsl3 ON (wsl3.x, wsl3.y) = (wsl1.x + 2, wsl1.y + 2)
+        JOIN word_search_letters wsl4 ON (wsl4.x, wsl4.y) = (wsl1.x + 3, wsl1.y + 3)
+    WHERE
+        (wsl1.letter, wsl2.letter, wsl3.letter, wsl4.letter) IN (('X','M','A','S'), ('S','A','M','X'))
+), diag_2 AS (
+    SELECT count(*)
     FROM
-        word_search_letters
-    GROUP BY
-        x+y
-), all_lines AS (
-    SELECT * FROM horizontal
-    UNION ALL
-    SELECT * FROM vertical
-    UNION ALL
-    SELECT * FROM diag_1
-    UNION ALL
-    SELECT * FROM diag_2
-), all_xmases AS (
-    SELECT unnest(regexp_matches(line, 'XMAS','g')), direction,
-    line_num
-    FROM all_lines
-    UNION ALL
-    SELECT unnest(regexp_matches(reverse(line), 'XMAS','g')), direction,
-    line_num
-    FROM all_lines
+        word_search_letters wsl1
+        JOIN word_search_letters wsl2 ON (wsl2.x, wsl2.y) = (wsl1.x + 1, wsl1.y - 1)
+        JOIN word_search_letters wsl3 ON (wsl3.x, wsl3.y) = (wsl1.x + 2, wsl1.y - 2)
+        JOIN word_search_letters wsl4 ON (wsl4.x, wsl4.y) = (wsl1.x + 3, wsl1.y - 3)
+    WHERE
+        (wsl1.letter, wsl2.letter, wsl3.letter, wsl4.letter) IN (('X','M','A','S'), ('S','A','M','X'))
 )
 INSERT INTO solutions
-SELECT 4, 'a', count(*) FROM all_xmases;
+SELECT 4, 'a', sum(count) 
+FROM (select * FROM horizontal UNION ALL select * FROM vertical UNION ALL select * FROM diag_1 UNION ALL SELECT * FROM diag_2) counts;
 
 
 WITH xmases AS (
