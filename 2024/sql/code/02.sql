@@ -24,6 +24,7 @@ CREATE TABLE reports (
     level_value int,
     level_id SERIAL PRIMARY KEY
 );
+CREATE INDEX idx_report_level_id ON reports(report_number, level_id);
 
 INSERT INTO reports
 SELECT
@@ -72,6 +73,7 @@ CREATE TABLE report_skips(
     skipped_id int,
     report_skip_id SERIAL PRIMARY KEY
 );
+CREATE INDEX idx_rs_skipped_id_report_skip_id ON report_skips(skipped_id, report_skip_id);
 
 INSERT INTO report_skips
 SELECT
@@ -92,6 +94,7 @@ CREATE TABLE report_skip_deltas(
     valid_increase boolean,
     valid_decrease boolean
 );
+CREATE INDEX idx_rsd_report_number_skipped_id ON report_skip_deltas(report_number, skipped_id);
 
 INSERT INTO report_skip_deltas
 SELECT
